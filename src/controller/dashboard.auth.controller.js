@@ -111,7 +111,7 @@ const createAdmin = async (req, res) => {
         });
         await createdCollectionInstance.save();
 
-        const emailSentId = await sendEmail(email,"Welcome!","accountCreated.html")
+        const emailSentId = await sendEmail(email, "Welcome!", "accountCreated.html")
 
         res.status(200).send({
             status: true,
@@ -277,17 +277,17 @@ const regenerateToken = async (req, res) => {
 // This controller will complete after settings SMPT
 const forgetPassword = async (req, res) => {
     try {
-        const {email} = req.body;
-        const isUserPresent = await userModel.findOne({email})
+        const { email } = req.body;
+        const isUserPresent = await userModel.findOne({ email })
 
-        if(!isUserPresent){
+        if (!isUserPresent) {
             return res.status(401).send({
                 status: false,
                 message: "You Don't have An Account"
             })
         }
         const link = ""
-        const id = await sendEmail(email,"Reset Password","forgetPassword.html",link);
+        const id = await sendEmail(email, "Reset Password", "forgetPassword.html", link);
 
         res.status(200).send({
             status: true,

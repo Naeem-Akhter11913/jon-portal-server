@@ -19,6 +19,6 @@ const UserModelInstence = new Schema({
         type: String,
         required: true,
     }
-});
+},{timestamps: true});
 
-module.exports = mongoose.model("UserModel", UserModelInstence);
+module.exports = mongoose.model("user", UserModelInstence);

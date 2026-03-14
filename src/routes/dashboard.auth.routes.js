@@ -1,5 +1,5 @@
 const express = require('express');
-const { createAdmin, loginUser, regenerateToken, resetPassword, forgetPassword } = require('../controller/auth.controller');
+const { createAdmin, loginUser, regenerateToken, resetPassword, forgetPassword } = require('../controller/dashboard.auth.controller');
 const isValidUserRequest = require('../middlewares/checkUser');
 const authRoute = express.Router();
 
