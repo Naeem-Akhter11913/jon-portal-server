@@ -4,6 +4,7 @@ const userModel = require('../models/user.model');
 const bcrypt = require('bcrypt');
 const round = Number(process.env.SALT_ROUND || '10');
 const jwt = require('jsonwebtoken');
+const sendEmail = require('../templates/nodemail');
 const secret = process.env.SECRET_KEY
 
 /**
@@ -110,8 +111,11 @@ const createAdmin = async (req, res) => {
         });
         await createdCollectionInstance.save();
 
+        const emailSentId = await sendEmail(email,"Welcome!","accountCreated.html")
+
         res.status(200).send({
             status: true,
+            emailSentId,
             message: "Your Profile created successfully!",
         });
     } catch (error) {
@@ -271,7 +275,32 @@ const regenerateToken = async (req, res) => {
 
 
 // This controller will complete after settings SMPT
-const forgetPassword = async (req, res) => { }
+const forgetPassword = async (req, res) => {
+    try {
+        const {email} = req.body;
+        const isUserPresent = await userModel.findOne({email})
+
+        if(!isUserPresent){
+            return res.status(401).send({
+                status: false,
+                message: "You Don't have An Account"
+            })
+        }
+        const link = ""
+        const id = await sendEmail(email,"Reset Password","forgetPassword.html",link);
+
+        res.status(200).send({
+            status: true,
+            sendMessageId: id,
+            message: "Email Successfully Sent!."
+        })
+    } catch (error) {
+        res.status(500).send({
+            status: false,
+            message: error.message || error
+        })
+    }
+}
 
 /**
  * @swagger
@@ -334,7 +363,7 @@ const forgetPassword = async (req, res) => { }
  *               status: false
  *               message: Internal server error
  */
-const changesPassword = async (req, res) => {
+const resetPassword = async (req, res) => {
     try {
         const userSchema = Joi.object({
             email: Joi.string().email().required(),
@@ -410,5 +439,6 @@ module.exports = {
     createAdmin,
     loginUser,
     regenerateToken,
-    changesPassword
+    resetPassword,
+    forgetPassword
 }
