@@ -15,13 +15,6 @@ app.use(cookieParser());
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 
-const dashboardAuthRoute = require('./src/routes/dashboard.auth.routes');
-const dashboardDetailsRoute = require('./src/routes/dashboard.userprofile.route');
-
-app.use('/auth', dashboardAuthRoute);
-app.use('/dashboard', dashboardDetailsRoute);
-
-
 app.use((err, req, res, next) => {
     console.error('Global error:', err);
     
@@ -30,6 +23,17 @@ app.use((err, req, res, next) => {
         message: err.message || "Internal Server Error"
     });
 });
+
+const dashboardAuthRoute = require('./src/routes/dashboard.auth.routes');
+const dashboardDetailsRoute = require('./src/routes/dashboard.userprofile.route');
+const dashboardSettingsRoute = require('./src/routes/dashboard.settings.route');
+
+app.use('/auth', dashboardAuthRoute);
+app.use('/dashboard', dashboardDetailsRoute);
+app.use('/dashboard/settings', dashboardSettingsRoute);
+
+
+
 
 app.listen(8080, () => {
     console.log('Server is listing on port 8080: http://localhost:8080')
